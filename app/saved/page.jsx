@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import BottomNav from '@/components/BottomNav';
 import RestaurantDetail from '@/components/RestaurantDetail';
-import { getSaved, unsaveRestaurant, updateSavedNotes } from '@/lib/api';
+import { getSaved, unsaveRestaurant, getRestaurantDetail } from '@/lib/api';
 import { formatDistanceToNow } from 'date-fns';
 
 export default function SavedPage() {
@@ -13,7 +13,13 @@ export default function SavedPage() {
 
   async function load() {
     try {
-      setSaved(await getSaved());
+      const list = await getSaved();
+      const details = await Promise.all(
+        list.map((s) =>
+          getRestaurantDetail(s.place_id).then((d) => ({ ...d, id: s.id, notes: s.notes, saved_at: s.saved_at }))
+        )
+      );
+      setSaved(details);
     } finally {
       setLoading(false);
     }
@@ -50,8 +56,8 @@ export default function SavedPage() {
           <div className="space-y-3">
             {saved.map((r) => (
               <div key={r.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
-                {r.photo_url && (
-                  <img src={r.photo_url} alt={r.name} className="w-full h-36 object-cover" />
+                {r.photos?.[0] && (
+                  <img src={r.photos[0]} alt={r.name} className="w-full h-36 object-cover" />
                 )}
                 <div className="p-4">
                   <div className="flex items-start justify-between gap-2">

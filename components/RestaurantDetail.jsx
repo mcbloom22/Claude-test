@@ -32,15 +32,7 @@ export default function RestaurantDetail({ placeId, onClose, onSaveChange }) {
       setSaved(false);
       setSavedId(null);
     } else {
-      const { id } = await saveRestaurant({
-        place_id: placeId,
-        name: detail.name,
-        address: detail.address,
-        google_rating: detail.google_rating,
-        yelp_rating: detail.yelp_rating,
-        yelp_url: detail.yelp_url,
-        photo_url: detail.photos?.[0] || null,
-      });
+      const { id } = await saveRestaurant({ place_id: placeId });
       setSaved(true);
       setSavedId(id);
     }

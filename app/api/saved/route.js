@@ -9,16 +9,14 @@ export async function GET() {
 
 export async function POST(request) {
   await initDb();
-  const { place_id, name, address, cuisine, google_rating, yelp_rating, yelp_url, photo_url, notes } =
-    await request.json();
+  const { place_id, notes } = await request.json();
 
-  if (!place_id || !name) return NextResponse.json({ error: 'place_id and name are required' }, { status: 400 });
+  if (!place_id) return NextResponse.json({ error: 'place_id is required' }, { status: 400 });
 
   try {
     const { rows } = await sql`
-      INSERT INTO saved_restaurants (place_id, name, address, cuisine, google_rating, yelp_rating, yelp_url, photo_url, notes)
-      VALUES (${place_id}, ${name}, ${address || ''}, ${cuisine || ''}, ${google_rating || null},
-              ${yelp_rating || null}, ${yelp_url || ''}, ${photo_url || ''}, ${notes || ''})
+      INSERT INTO saved_restaurants (place_id, notes)
+      VALUES (${place_id}, ${notes || ''})
       ON CONFLICT (place_id) DO NOTHING
       RETURNING id
     `;
