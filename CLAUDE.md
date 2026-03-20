@@ -4,7 +4,24 @@ This file provides guidance for AI assistants (Claude and others) working in thi
 
 ## Repository Overview
 
-This is a freshly initialized repository. This CLAUDE.md will be updated as the codebase grows to reflect the actual structure, workflows, and conventions of the project.
+**Reserve** — a personal restaurant discovery and reservation tracking web app.
+Mobile-first, designed to be used from an iPhone via Safari (or added to home screen as a PWA).
+
+### Key Features
+- **Discover** — Search restaurants via Google Places + Yelp, with deep links to Beli, The Infatuation, OpenTable, and Resy
+- **Saved** — Wishlist of restaurants to try
+- **Reservations** — Log and track upcoming (and past) reservations
+
+## Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 14 (App Router) |
+| Language | JavaScript (no TypeScript) |
+| Styling | Tailwind CSS |
+| Database | Vercel Postgres (Neon) via `@vercel/postgres` |
+| Deployment | Vercel |
+| Date picker | `react-day-picker` v9 + `date-fns` |
 
 ## General Development Conventions
 
@@ -48,43 +65,83 @@ This is a freshly initialized repository. This CLAUDE.md will be updated as the 
 - Follow the principle of least privilege for permissions and access.
 - Use environment variables for configuration and secrets; never hard-code them.
 
+## Project Structure
+
+```
+app/                     Next.js App Router pages + API routes
+  api/
+    restaurants/         Google Places + Yelp proxy endpoints
+    saved/               Wishlist CRUD
+    reservations/        Reservation CRUD
+  discover/              Search/discovery page
+  saved/                 Wishlist page
+  reservations/          Reservations page
+components/              Shared React components
+lib/
+  db.js                  Vercel Postgres setup + table migrations
+  api.js                 Client-side fetch helpers
+public/
+  manifest.json          PWA manifest
+```
+
 ## Project Setup
 
-> This section will be updated once the project is initialized with source code and dependencies.
+### 1. Clone and install
 
-When the project is set up, document here:
-- How to install dependencies
-- How to run the development server / application
-- How to run tests
-- How to build for production
-- Required environment variables (with descriptions, not values)
+```bash
+npm install
+```
+
+### 2. Vercel Postgres (database)
+
+1. Push this repo to GitHub and import it into Vercel
+2. In your Vercel project, go to **Storage → Create Database → Postgres**
+3. Link it to the project — Vercel will auto-add `POSTGRES_URL` and related env vars
+4. Pull env vars for local development:
+   ```bash
+   npx vercel env pull .env.local
+   ```
+
+### 3. API keys
+
+Add these to your Vercel project's environment variables (and your local `.env.local`):
+
+| Variable | Description | Where to get it |
+|----------|-------------|-----------------|
+| `GOOGLE_PLACES_API_KEY` | Google Places API key | [Google Cloud Console](https://console.cloud.google.com/) — enable **Places API** |
+| `YELP_API_KEY` | Yelp Fusion API key | [Yelp Developer Portal](https://docs.developer.yelp.com/) — optional |
+
+### 4. Run locally
+
+```bash
+npm run dev
+```
+
+App runs at `http://localhost:3000`.
+
+## Database
+
+Tables are auto-created on first request via `lib/db.js` (`initDb()`). No manual migrations needed.
+
+- `saved_restaurants` — wishlist items, keyed by Google `place_id`
+- `reservations` — logged reservations with date, time, party size
+
+## Security Notes
+
+- API keys (Google, Yelp) are proxied server-side via Next.js API routes and never sent to the client
+- All env vars live in `.env.local` (gitignored) locally and in Vercel's environment variable settings in production
 
 ## Testing
 
-> This section will be updated once a testing strategy is established.
-
-When tests are added, document here:
-- Test framework and tooling
-- How to run the full test suite
-- How to run a single test
-- Where tests live relative to source files
-- Conventions for test naming and structure
-
-## Project Structure
-
-> This section will be updated once the project structure is established.
-
-When source code is added, document here:
-- Directory layout and what each top-level folder contains
-- Where the entry point(s) are
-- Where configuration lives
-- Where shared utilities/helpers live
+No automated test suite yet. Manual checklist:
+- [ ] Search returns results
+- [ ] Restaurant detail shows Google + Yelp ratings
+- [ ] Save/unsave a restaurant
+- [ ] Log a reservation (form validates, prevents past dates)
+- [ ] Cancel a reservation via confirm dialog
+- [ ] External links (Yelp, Beli, Infatuation, OpenTable, Resy) open correctly
+- [ ] App is usable when added to iPhone home screen
 
 ## CI/CD
 
-> This section will be updated once CI/CD pipelines are configured.
-
-When pipelines are added, document here:
-- What checks run on PRs (lint, test, build, etc.)
-- Deployment process and environments
-- How to monitor pipeline status
+Vercel handles builds and deployments automatically on push to `main`.
