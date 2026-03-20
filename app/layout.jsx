@@ -4,18 +4,19 @@ export const metadata = {
   title: 'Reserve',
   description: 'Personal restaurant discovery and reservation tracker',
   manifest: '/manifest.json',
-  themeColor: '#E8472A',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
     title: 'Reserve',
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
+};
+
+export const viewport = {
+  themeColor: '#E8472A',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({ children }) {
