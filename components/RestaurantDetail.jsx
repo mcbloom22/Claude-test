@@ -89,6 +89,12 @@ export default function RestaurantDetail({ placeId, onClose, onSaveChange }) {
                   </span>
                 )}
                 {priceStr && <span className="text-sm text-gray-400">{priceStr}</span>}
+                {detail.open_now === true && (
+                  <span className="text-sm font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Open now</span>
+                )}
+                {detail.open_now === false && (
+                  <span className="text-sm font-medium text-red-500 bg-red-50 px-2 py-0.5 rounded-full">Closed</span>
+                )}
               </div>
             </div>
 

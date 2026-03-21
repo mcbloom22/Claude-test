@@ -26,6 +26,12 @@ export default function RestaurantCard({ restaurant: r, onClick }) {
             {priceStr && (
               <span className="text-xs text-gray-400">{priceStr}</span>
             )}
+            {r.open_now === true && (
+              <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Open</span>
+            )}
+            {r.open_now === false && (
+              <span className="text-xs font-medium text-red-500 bg-red-50 px-2 py-0.5 rounded-full">Closed</span>
+            )}
           </div>
         </div>
         <span className="text-gray-300 self-center text-lg shrink-0">›</span>

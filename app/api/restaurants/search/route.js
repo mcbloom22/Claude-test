@@ -24,6 +24,7 @@ export async function GET(request) {
       address: p.formatted_address,
       rating: p.rating,
       price_level: p.price_level,
+      open_now: p.opening_hours?.open_now ?? null,
       photo_url: p.photos?.[0]
         ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${p.photos[0].photo_reference}&key=${GOOGLE_KEY}`
         : null,

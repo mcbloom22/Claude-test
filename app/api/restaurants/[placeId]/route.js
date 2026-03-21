@@ -30,6 +30,7 @@ export async function GET(request, { params }) {
       google_rating: p.rating,
       google_reviews: p.user_ratings_total,
       price_level: p.price_level,
+      open_now: p.opening_hours?.open_now ?? null,
       hours: p.opening_hours?.weekday_text || null,
       photos: (p.photos || []).slice(0, 5).map(
         (ph) => `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${ph.photo_reference}&key=${GOOGLE_KEY}`
